@@ -43,57 +43,42 @@ pipeline {
         }
 
         stage('Email Summary') {
-            steps {
-                script {
-                    // Create a summary file using echo (simulate output)
-                    bat """
-                        echo Data has been successfully migrated to the SQL Server. > ${env.SUMMARY_FILE}
-                        echo. >> ${env.SUMMARY_FILE}
-                        echo Timestamp: %DATE% %TIME% >> ${env.SUMMARY_FILE}
-                        echo Pipeline: ${env.JOB_NAME} >> ${env.SUMMARY_FILE}
-                        echo Build Number: ${env.BUILD_NUMBER} >> ${env.SUMMARY_FILE}
-                    """
+    steps {
+        script {
+            def summaryContent = readFile(env.SUMMARY_FILE)
+            emailext (
+                subject: "✅ Data Migrated Successfully to SQL Server",
+                body: """\
+Data has been successfully migrated to the SQL Server.
 
-                    // Read file content
-                    def summaryContent = readFile(env.SUMMARY_FILE)
-
-                    // Send the email
-                    emailext (
-                        subject: "✅ Data Migrated Successfully to SQL Server",
-                        body: """\
-Hello,
-
-The data has been successfully migrated to the SQL Server.
-
-Here is the summary:
+You can find the final migration report below:
 
 ${summaryContent}
-
-Regards,
-Jenkins Pipeline
 """,
-                        to: "${env.EMAIL_RECIPIENT}",
-                        from: 'srikarvanaparthy@gmail.com'
-                    )
-                }
-            }
-        }
-    }
-
-    post {
-        failure {
-            emailext(
                 to: "${env.EMAIL_RECIPIENT}",
-                from: 'srikarvanaparthy@gmail.com',
-                subject: "❌ GCP Upload Pipeline FAILED",
-                body: """\
-The Jenkins job has failed.
-
-Job: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
-URL: ${env.BUILD_URL}
-"""
+                from: 'srikarvanaparthy@gmail.com'
             )
         }
     }
+}
+
+    }
+
+    post {
+    failure {
+        emailext(
+            to: "${env.EMAIL_RECIPIENT}",
+            from: 'srikarvanaparthy@gmail.com',
+            subject: "❌ GCP Upload Pipeline FAILED",
+            body: """\
+            The Jenkins job has failed.
+
+            Job: ${env.JOB_NAME}
+            Build Number: ${env.BUILD_NUMBER}
+            URL: ${env.BUILD_URL}
+            """
+        )
+    }
+}
+
 }
