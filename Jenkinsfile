@@ -10,11 +10,12 @@ pipeline {
         EMAIL_RECIPIENT = 'srikarvanaparthy21@gmail.com'
     }
 
+
     stages {
         stage('Checkout Repository') {
             steps {
                 // Update with your actual GitHub repo URL
-                git url: 'https://github.com/your-user/python-csv-uploader.git', branch: 'main'
+                git url: 'https://github.com/SrikarVanaparthy/Jenkins-usecase-2.git', branch: 'main'
             }
         }
 
