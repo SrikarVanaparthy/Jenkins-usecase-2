@@ -24,8 +24,9 @@ pipeline {
                 bat '''
                     python -m venv venv
                     call venv\\Scripts\\activate
-                    pip install --upgrade pip
-                    pip install pandas mysql-connector-python
+                    python -m pip install --upgrade pip
+                    python -m pip install pandas mysql-connector-python
+
                 '''
             }
         }
