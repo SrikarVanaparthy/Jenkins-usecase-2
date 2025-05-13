@@ -16,17 +16,6 @@ pipeline {
             }
         }
 
-        stage('Setup Python and Dependencies') {
-            steps {
-                bat """
-                    "${env.PYTHON_PATH}" -m pip install --upgrade pip setuptools wheel
-
-                    "${env.PYTHON_PATH}" -c "import pandas" || "${env.PYTHON_PATH}" -m pip install pandas
-                    "${env.PYTHON_PATH}" -c "import pyodbc" || "${env.PYTHON_PATH}" -m pip install pyodbc
-                """
-            }
-        }
-
         stage('Load CSV to GCP') {
             steps {
                 bat """
