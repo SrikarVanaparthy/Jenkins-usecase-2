@@ -46,30 +46,30 @@ pipeline {
     steps {
         script {
             def summaryContent = readFile(env.SUMMARY_FILE)
-            mail (
-                to: "${env.EMAIL_RECIPIENT}",
-                subject: "✅ Data Migrated Successfully to SQL Server",
+            emailext (
+                subject: "Data Migrated Successfully to SQL Server",
                 body: """\
 Data has been successfully migrated to the SQL Server.
 
 You can find the final migration report below:
 
 ${summaryContent}
-"""
+""",
+                to: "${env.EMAIL_RECIPIENT}",
+                from: 'gogulateja92@gmail.com'
             )
         }
     }
 }
 
-
     }
 
     post {
     failure {
-        mail(
+        emailext(
             to: "${env.EMAIL_RECIPIENT}",
             from: 'gogulateja92@gmail.com',
-            subject: "❌ GCP Upload Pipeline FAILED",
+            subject: "GCP Upload Pipeline FAILED",
             body: """\
             The Jenkins job has failed.
 
