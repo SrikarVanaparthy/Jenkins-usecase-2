@@ -26,6 +26,8 @@ DB_CONFIG = {
 
     'driver': '{ODBC Driver 18 for SQL Server}',
 
+    
+
     'port': 1433
 
 }
@@ -44,7 +46,9 @@ def get_connection():
 
         f"UID={DB_CONFIG['username']};"
 
-        f"PWD={DB_CONFIG['password']}"
+        f"PWD={DB_CONFIG['password']};"
+
+        "TrustServerCertificate=yes;"
 
     )
 

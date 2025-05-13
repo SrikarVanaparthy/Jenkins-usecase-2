@@ -24,6 +24,8 @@ db_config = {
 
     'driver': '{ODBC Driver 18 for SQL Server}'
 
+    
+
 }
  
 TABLE_NAME = 'people'
@@ -40,7 +42,9 @@ def get_connection():
 
         f"UID={db_config['user']};"
 
-        f"PWD={db_config['password']}"
+        f"PWD={db_config['password']};"
+
+        "TrustServerCertificate=yes;"
 
     )
 
