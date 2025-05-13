@@ -33,12 +33,15 @@ def get_connection():
     return pyodbc.connect(conn_str)
 
 def row_exists_and_different(cursor, row):
-    check_query = f"SELECT fname, lname FROM {TABLE_NAME} WHERE id = ?"
+    # Check if the row exists by id (or any unique field, here we use id)
+    check_query = f"SELECT id, fname, lname FROM {TABLE_NAME} WHERE id = ?"
     cursor.execute(check_query, row['id'])
     result = cursor.fetchone()
+    
     if not result:
         return False, True  # Doesn't exist → insert
-    return True, (result[0] != row['fname'] or result[1] != row['lname'])  # Exists, but different → update
+    # Exists, but we check if fname or lname has changed, if so, we need to update
+    return True, (result[1] != row['fname'] or result[2] != row['lname'])  # Check if fname or lname has changed
 
 def load_data():
     df = pd.read_csv(CSV_FILE_PATH)
@@ -56,10 +59,11 @@ def load_data():
     for _, row in df.iterrows():
         exists, needs_update = row_exists_and_different(cursor, row)
         if not exists:
+            # Insert new row
             cursor.execute(insert_query, (row['id'], row['fname'], row['lname']))
         elif needs_update:
+            # Update the existing row with the id
             cursor.execute(update_query, (row['fname'], row['lname'], row['id']))
-        # else: no need to do anything
 
     conn.commit()
     cursor.close()
