@@ -57,6 +57,7 @@ ${summaryContent}
 """,
                 to: "${env.EMAIL_RECIPIENT}",
                 from: 'gogulateja92@gmail.com'
+                attachmentsPattern: "${env.SUMMARY_FILE}"
             )
         }
     }
