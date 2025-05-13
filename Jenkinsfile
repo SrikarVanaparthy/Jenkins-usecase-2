@@ -6,7 +6,7 @@ pipeline {
         PYTHON_SCRIPT_LOAD = 'scripts\\load_csv_to_gcp.py'
         PYTHON_SCRIPT_SUMMARY = 'scripts\\generate_summary.py'
         SUMMARY_FILE = 'upload_summary.txt'
-        EMAIL_RECIPIENT = 'srikarvanaparthy21@gmail.com'
+        EMAIL_RECIPIENT = 'srikarvanaparthy@gmail.com'
     }
 
     stages {
