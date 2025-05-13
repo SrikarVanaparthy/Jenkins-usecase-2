@@ -22,7 +22,7 @@ db_config = {
 
     'port': 1433,
 
-    'driver': '{ODBC Driver 17 for SQL Server}'
+    'driver': '{ODBC Driver 18 for SQL Server}'
 
 }
  

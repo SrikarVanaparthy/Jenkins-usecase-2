@@ -24,7 +24,7 @@ DB_CONFIG = {
 
     'password': 'P@ssword@123',
 
-    'driver': '{ODBC Driver 17 for SQL Server}',
+    'driver': '{ODBC Driver 18 for SQL Server}',
 
     'port': 1433
 
