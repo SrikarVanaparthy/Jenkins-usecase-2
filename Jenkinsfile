@@ -21,7 +21,7 @@ pipeline {
                 bat """
                     "${env.PYTHON_PATH}" -m pip install --upgrade pip
                     "${env.PYTHON_PATH}" -m pip install --upgrade pip setuptools wheel
-                    "${env.PYTHON_PATH}" -m pip install pandas mysql-connector-python numpy==1.21.6 --no-build-isolation
+                    "${env.PYTHON_PATH}" -m pip install pandas mysql-connector-python numpy==1.21.6 
                 """
             }
         }
