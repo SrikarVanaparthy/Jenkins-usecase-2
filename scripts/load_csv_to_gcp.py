@@ -74,11 +74,11 @@ def load_data():
  
     # Insert data
 
-    insert_query = f"INSERT INTO {TABLE_NAME} (id, fname, lname) VALUES (?, ?, ?)"
+    insert_query = f"INSERT INTO {TABLE_NAME} (fname, lname) VALUES (?, ?)"
 
     for _, row in df.iterrows():
 
-        cursor.execute(insert_query, (row['id'], row['fname'], row['lname']))
+        cursor.execute(insert_query, (row['fname'], row['lname']))
  
     conn.commit()
 
