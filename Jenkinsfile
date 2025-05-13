@@ -46,7 +46,7 @@ pipeline {
     steps {
         script {
             def summaryContent = readFile(env.SUMMARY_FILE)
-            emailext (
+            mail (
                 subject: "Data Migrated Successfully to SQL Server",
                 body: """\
 Data has been successfully migrated to the SQL Server.
@@ -67,7 +67,7 @@ ${summaryContent}
 
     post {
     failure {
-        emailext(
+        mail(
             to: "${env.EMAIL_RECIPIENT}",
             from: 'gogulateja92@gmail.com',
             subject: "GCP Upload Pipeline FAILED",
