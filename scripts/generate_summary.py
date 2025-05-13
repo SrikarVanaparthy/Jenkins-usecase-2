@@ -51,7 +51,7 @@ def get_connection():
     return pyodbc.connect(conn_str)
 
 def get_existing_ids(cursor):
-    # Get the existing ids in the database
+    # Get the existing ids in the database before the operation
     cursor.execute(f"SELECT id FROM {TABLE_NAME}")
     return {row[0] for row in cursor.fetchall()}
 
@@ -73,24 +73,26 @@ def generate_summary():
     cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}")
     total_count = cursor.fetchone()[0]
 
+    # Step 1: Fetch the current existing ids from the database before any operation
     existing_ids_before = get_existing_ids(cursor)
 
-    # Step 1: Insert, Update, and Delete rows logic would go here
-    # We'll assume that you have performed the necessary operations (insert/update/delete)
-    # and now you want to track how many rows have been deleted, inserted, and updated.
+    # Step 2: Perform operations (Insert/Update/Delete)
+    # At this point, you will process the CSV file and perform the necessary operations.
+    # After performing the operation, we need to check the current ids in the database.
 
-    # In this example, we'll assume you have a CSV and data has been processed.
-    # After processing the CSV, you should compare the `existing_ids_before` with the current `existing_ids_after`.
+    # For demonstration, we'll assume the database is updated with new rows and some deletions.
+    # Step 3: Fetch the current existing ids after processing the CSV and applying changes.
+    existing_ids_after = get_existing_ids(cursor)
 
-    # Step 2: Simulate operations (replace this with actual insert/update/delete operations)
-    existing_ids_after = existing_ids_before  # This should be updated with the new ids after operation
+    # Step 4: Calculate the differences
     inserted_ids = existing_ids_after - existing_ids_before  # New rows inserted
     deleted_ids = existing_ids_before - existing_ids_after  # Rows deleted
 
-    # Calculate inserted and deleted rows
+    # Step 5: Count inserted and deleted rows
     inserted_count = len(inserted_ids)
     deleted_count = len(deleted_ids)
 
+    # Step 6: Generate the summary
     summary = f"""
 CSV Upload Summary Report:
 
@@ -103,6 +105,7 @@ Total rows now:     {total_count}
 
     """.strip()
 
+    # Step 7: Save the summary to the file
     with open(SUMMARY_FILE, "w") as f:
         f.write(summary)
 
