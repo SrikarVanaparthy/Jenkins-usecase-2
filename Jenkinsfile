@@ -21,7 +21,7 @@ pipeline {
                 bat """
                     "${env.PYTHON_PATH}" -m pip install --upgrade pip
                     "${env.PYTHON_PATH}" -m pip install --upgrade setuptools wheel
-                    "${env.PYTHON_PATH}" -m pip install pandas==2.2.2 mysql-connector-python numpy==1.26.4
+                    "${env.PYTHON_PATH}" -m pip install pandas pyodbc
                 """
             }
         }

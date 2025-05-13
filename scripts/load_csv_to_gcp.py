@@ -1,44 +1,91 @@
 import pandas as pd
-import mysql.connector
+
+import pyodbc
+
 import os
-
+ 
 # ---- CONFIG ----
+
 BASE_DIR = os.path.dirname(__file__)
+
 CSV_FILE_PATH = os.path.join(BASE_DIR, '..', 'data', 'sample.csv')
+
 ROW_COUNT_FILE = os.path.join(BASE_DIR, '..', 'row_count.txt')
+ 
+# SQL Server DB config
 
-db_config = {
-    'host': '34.170.77.150',
-    'user': 'sqlserver',
-    'password': 'P@ssword@123',
+DB_CONFIG = {
+
+    'server': '34.170.77.150',
+
     'database': 'testdb',
-    'port': 3306
+
+    'username': 'sqlserver',
+
+    'password': 'P@ssword@123',
+
+    'driver': '{ODBC Driver 17 for SQL Server}',
+
+    'port': 1433
+
 }
-
+ 
 TABLE_NAME = 'people'
+ 
+def get_connection():
 
-# ---- MAIN ----
+    conn_str = (
+
+        f"DRIVER={DB_CONFIG['driver']};"
+
+        f"SERVER={DB_CONFIG['server']},{DB_CONFIG['port']};"
+
+        f"DATABASE={DB_CONFIG['database']};"
+
+        f"UID={DB_CONFIG['username']};"
+
+        f"PWD={DB_CONFIG['password']}"
+
+    )
+
+    return pyodbc.connect(conn_str)
+ 
 def load_data():
+
     df = pd.read_csv(CSV_FILE_PATH)
-    conn = mysql.connector.connect(**db_config)
+
+    conn = get_connection()
+
     cursor = conn.cursor()
+ 
+    # Get pre-insert count and save
 
-    # Get pre-insert count and write to file
     cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}")
+
     pre_count = cursor.fetchone()[0]
-
+ 
     with open(ROW_COUNT_FILE, "w") as f:
+
         f.write(str(pre_count))
-
+ 
     # Insert data
-    insert_query = f"INSERT INTO {TABLE_NAME} (id, fname, lname) VALUES (%s, %s, %s)"
+
+    insert_query = f"INSERT INTO {TABLE_NAME} (id, fname, lname) VALUES (?, ?, ?)"
+
     for _, row in df.iterrows():
+
         cursor.execute(insert_query, (row['id'], row['fname'], row['lname']))
-
+ 
     conn.commit()
-    cursor.close()
-    conn.close()
-    print("✅ Data loaded into GCP MySQL.")
 
+    cursor.close()
+
+    conn.close()
+ 
+    print("✅ Data loaded into GCP SQL Server.")
+ 
 if __name__ == "__main__":
+
     load_data()
+
+ 
