@@ -81,12 +81,10 @@ def generate_summary():
 
     total_count = cursor.fetchone()[0]
  
-    inserted_count = total_count - pre_count
+    inserted_count = total_count - pre_count if total_count > pre_count else 0
 
-    deleted_count = pre_count - total_count 
+    deleted_count = pre_count - total_count if pre_count > total_count else 0
 
-    
- 
     summary = f"""
 
 CSV Upload Summary Report:
