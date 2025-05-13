@@ -20,9 +20,8 @@ pipeline {
             steps {
                 bat """
                     "${env.PYTHON_PATH}" -m pip install --upgrade pip
-                    "${env.PYTHON_PATH}" -m pip install --upgrade pip setuptools wheel
-                    "${env.PYTHON_PATH}" -m pip install pandas==1.3.5 mysql-connector-python numpy==1.21.6
- 
+                    "${env.PYTHON_PATH}" -m pip install --upgrade setuptools wheel
+                    "${env.PYTHON_PATH}" -m pip install pandas==2.2.2 mysql-connector-python numpy==1.26.4
                 """
             }
         }
