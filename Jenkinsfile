@@ -5,14 +5,20 @@ pipeline {
         PYTHON_PATH = 'C:\\Users\\Admin-BL\\AppData\\Local\\Programs\\Python\\Python312\\python.exe'
         PYTHON_SCRIPT_LOAD = 'scripts\\load_csv_to_gcp.py'
         PYTHON_SCRIPT_SUMMARY = 'scripts\\generate_summary.py'
-        SUMMARY_FILE = 'upload_summary.txt'
-        EMAIL_RECIPIENT = 'srikarvanaparthy@gmail.com'
+        SUMMARY_FILE = 'summary.doc'
+        EMAIL_RECIPIENT = 'srikarvanaparthy21@gmail.com'
     }
 
     stages {
         stage('Checkout Repository') {
             steps {
                 git url: 'https://github.com/SrikarVanaparthy/Jenkins-usecase-2.git', branch: 'main'
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                bat "dir" // Lists files in current workspace
             }
         }
 
@@ -29,7 +35,7 @@ pipeline {
         stage('Load CSV to GCP') {
             steps {
                 bat """
-                    "${env.PYTHON_PATH}" %PYTHON_SCRIPT_LOAD%
+                    "${env.PYTHON_PATH}" "${env.PYTHON_SCRIPT_LOAD}"
                 """
             }
         }
@@ -37,49 +43,49 @@ pipeline {
         stage('Generate Summary Report') {
             steps {
                 bat """
-                    "${env.PYTHON_PATH}" %PYTHON_SCRIPT_SUMMARY%
+                    "${env.PYTHON_PATH}" "${env.PYTHON_SCRIPT_SUMMARY}"
                 """
             }
         }
 
+
         stage('Email Summary') {
-    steps {
-        script {
-            def summaryContent = readFile(env.SUMMARY_FILE)
-            mail (
-                subject: "Data Migrated Successfully to SQL Server",
-                body: """\
+            steps {
+                script {
+                    def summaryContent = readFile(env.SUMMARY_FILE)
+                    emailext (
+                        subject: "✅ Data Migrated Successfully to SQL Server",
+                        body: """\
 Data has been successfully migrated to the SQL Server.
 
 You can find the final migration report below:
 
 ${summaryContent}
 """,
-                to: "${env.EMAIL_RECIPIENT}",
-                from: 'gogulateja92@gmail.com',
-                attachmentsPattern: "${env.SUMMARY_FILE}"
-            )
+                        to: "srikarvanaparthy21@gmail.com",
+                        from: 'srikarvanaparthy@gmail.com',
+                        attachmentsPattern: 'summary.doc',
+                        mimeType: 'application/msword'
+                    )
+                }
+            }
         }
-    }
-}
-
     }
 
     post {
-    failure {
-        mail(
-            to: "${env.EMAIL_RECIPIENT}",
-            from: 'gogulateja92@gmail.com',
-            subject: "GCP Upload Pipeline FAILED",
-            body: """\
-            The Jenkins job has failed.
+        failure {
+            emailext (
+                to: "srikarvanaparthy21@gmail.com",
+                from: 'srikarvanaparthy@gmail.com',
+                subject: "❌ GCP Upload Pipeline FAILED",
+                body: """\
+The Jenkins job has failed.
 
-            Job: ${env.JOB_NAME}
-            Build Number: ${env.BUILD_NUMBER}
-            URL: ${env.BUILD_URL}
-            """
-        )
+Job: ${env.JOB_NAME}
+Build Number: ${env.BUILD_NUMBER}
+URL: ${env.BUILD_URL}
+"""
+            )
+        }
     }
-}
-
 }
